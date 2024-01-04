@@ -28,4 +28,9 @@ Questions
 8 -   Quel sera le format des fichiers audio utilisés dans le jeu ? Le format des fichiers audio utilisés dans le jeu sera déterminé ultérieurement, en fonction des besoins spécifiques en termes de qualité sonore et de compatibilité avec la plateforme de déploiement.
 9 - Comment seront gérées les sauvegardes de progression des joueurs ? Les sauvegardes de progression des joueurs seront gérées à l'aide de la fonction de contrôle de version fournie par GitHub. Chaque joueur pourra sauvegarder sa progression et reprendre le jeu là où il s'était arrêté.
 10 -  a-t-il des exigences particulières en matière de performances ou de compatibilité avec les systèmes d'exploitation ? Aucune exigence particulière en matière de performances n'est spécifiée, et le jeu sera compatible avec les systèmes d'exploitation pris en charge par la plateforme GitHub. Les développeurs devront veiller à ce que le jeu fonctionne de manière optimale sur les navigateurs web courants.
-
+-----------------------------------------------------------------------
+Commentaires sur le cahier des charges :
+- Si vous pensez faire un menu avec un bouton ("trois traits") accessible pendant le jeu, cela suppose l'utilisation de la souris, en plus du clavier.
+- Si vous prenez la peine d'avoir le choix entre 2 personnages, il faut que cela change quelque chose dans le jeu. Sinon, laissez tomber.
+- Programmer un déplacement aléatoire de la sorcière n'est pas forcément chose facile, surtout s'il y a des obstacles à gérer.
+- Vos points 8 à 10 n'ont pas de sens dans le cadre de ce projet puisque vous avez choisi de passer par Pixel.
