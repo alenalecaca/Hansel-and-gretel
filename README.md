@@ -17,7 +17,7 @@ description du jeu :
 Le jeu Hansel & Gretel sera un jeu interactif qui décrit l'histoire de deux enfants perdus qui doivent s'enfuir de la sorcière et de sa maison en collectant des bonbons basés sur le compte des frères Grimm. 
 colore et pratiques pour l'interaction 
 
-Questions 
+Questions
 1 - Interface graphique et bibliothèque graphique : Le jeu vidéo "Hansel and Gretel" utilisera l'interface graphique fournie par le site Pixel Studio. La bibliothèque graphique associée à Pixel Studio sera utilisée pour le développement visuel du jeu.
 2 - Interaction utilisateur : Les interactions avec le jeu se feront principalement via le clavier. Les utilisateurs auront la possibilité de contrôler les personnages Hansel et Gretel à l'aide des touches du clavier. Le jeu est conçu pour un seul utilisateur.
 3 - Partie audio : Le jeu comportera des éléments audio tels que musiques d'ambiance, effets sonores et bruitages. Ces éléments audio seront créés en interne pour assurer une intégration harmonieuse avec le jeu.
