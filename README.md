@@ -28,3 +28,9 @@ Commentaires sur le cahier des charges :
 - Si vous prenez la peine d'avoir le choix entre 2 personnages, il faut que cela change quelque chose dans le jeu. Sinon, laissez tomber.
 - Programmer un déplacement aléatoire de la sorcière n'est pas forcément chose facile, surtout s'il y a des obstacles à gérer.
 - Vos points 8 à 10 n'ont pas de sens dans le cadre de ce projet puisque vous avez choisi de passer par Pixel.
+-----------------------------------------------------------------------
+Commentaires sur le planning :
+Le planning doit aller jusqu'à la fin du projet, c'est-à-dire le 19 avril.
+Les tâches sont trop vagues et/ou trop grosses. Par exemple "developper la boutique et linformations disponible dans le menu" ne me paraît pas faisable pour une seule personne en 2h.
+Tel que vous l'avez écrit, le jeu serait presque terminé d'ici un mois, cela ne me semble pas très réaliste. Et la tâche "programmer le personnage qui saute et comment il va depacer les obstacles" semble être la seule qui concerne le déplacement du personnage principal du jeu. Or elle vient à la fin alors que déplacer le personnage est une des premières choses à faire.
+La répartition ne me semble pas très adaptée. La programmation des déplacements de la sorcière est une tâche compliquée qui devrait aller aux personnes les plus à l'aise en programmation.
