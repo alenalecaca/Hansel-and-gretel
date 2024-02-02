@@ -3,8 +3,8 @@ import pyxel, random
  
 
 # taille de la fenetre en pixels
-pyxel.init(128, 128, title="Nuit du c0de")
-
+pyxel.init(128, 128, title="Jeux - Hansel & Gretel")
+pyxel.load("res.pyxres")
 # position initiale du personnage, seuil de base du sol et la hauteur du personnage
 perso_x = 60
 perso_y = 60
@@ -29,10 +29,10 @@ def blocs_creation(blocs_liste):
 def blocs_deplacement(blocs_liste):
     """déplacement des blocs vers la gauche et suppression s'ils sortent du cadre"""
     """mouvement avec les touches de directions"""
-    
+#variables blocs provisoires, juste pour montrer l'effet de scrolling    
     for bloc in blocs_liste:
         bloc[0] -= 1
-        if  bloc[1]>128:
+        if  bloc[0]<0:
             blocs_liste.remove(bloc)
     return blocs_liste
 
@@ -42,10 +42,10 @@ def perso_deplacement():
     if pyxel.btnp(pyxel.KEY_UP) and perso_y == sol:
         saut = True
     if saut:
-        perso_y -=5
+        perso_y -=3
         if perso_y <= 40:
             saut = False
-    if not saut:
+    else:
         perso_y +=3
         if perso_y >= sol:
             perso_y = sol
@@ -53,7 +53,7 @@ def perso_deplacement():
 
 
 def update():
-    global blocs_liste, perso_y
+    global blocs_liste
 
     # creation des blocs
     blocs_liste = blocs_creation(blocs_liste)
@@ -70,16 +70,27 @@ def draw():
     # vide la fenetre
     pyxel.cls(0)
 
-    # perso (carre 8x8)
-    if pyxel.btn(pyxel.KEY_DOWN):
-        pyxel.rect(perso_x, perso_y+4, 8, 4, 1)
-    else: pyxel.rect(perso_x, perso_y, 8, 8, 1)
-
     # blocs
     for bloc in blocs_liste:
         pyxel.rect(bloc[0], bloc[1], 8, 8, 8)
 
 
-help(pyxel.rect)
+    if pyxel.btn(pyxel.KEY_DOWN):
+        if pyxel.frame_count % 15 < 5:
+            pyxel.blt(perso_x, perso_y, 0, 14, 16, 16, 16, 2)
+        elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
+            pyxel.blt(perso_x, perso_y, 0, 14, 48, 16, 16, 2)
+        else:
+            pyxel.blt(perso_x, perso_y, 0, 14, 32, 16, 16, 2)
+    else:  
+        if pyxel.frame_count % 15 < 5:
+            pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
+        elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
+            pyxel.blt(perso_x, perso_y, 0, 0, 32, 13, 16, 2)
+        else:
+            pyxel.blt(perso_x, perso_y, 0, 0, 64, 13, 16, 2)
+
+
+#help(pyxel.rect)
 
 pyxel.run(update, draw)
