@@ -116,12 +116,7 @@ def perso_tomber():
         perso_mort = False
     else:
         perso_mort = True
-
-def ecran_mort():
-    if perso_mort == True:
         score = 0    #les point+compteur du score seront ajoutés après
-        #.
-
 
 #==================================================================
 # fonction à appeler dans la fonction "update" du module principal
@@ -236,6 +231,10 @@ def draw():
      
     # appel de la fonction "draw" du menu: à reporter dans module main
         menu_draw()
+    elif perso_mort == True:
+        pyxel.cls(0)
+        pyxel.text(20, 50, "Mort, appuie sur return pour recommencer", 7)
+
     else:
         
         # vide la fenetre
