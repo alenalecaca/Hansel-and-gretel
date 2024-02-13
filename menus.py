@@ -120,7 +120,7 @@ def perso_tomber():
 def ecran_mort():
     if perso_mort == True:
         score = 0    #les point+compteur du score seront ajoutés après
-        
+        #.
 
 
 #==================================================================
