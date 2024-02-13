@@ -37,6 +37,7 @@ perso_y = 60
 sol = 60
 hauteur_perso = 8
 saut = False
+perso_mort = False
 
 blocs_liste = []
 
@@ -109,7 +110,17 @@ def perso_deplacement():
         perso_y +=3
         if perso_y >= sol:
             perso_y = sol
-    
+
+def perso_tomber():
+    if perso_y >= sol:
+        perso_mort = False
+    else:
+        perso_mort = True
+
+def ecran_mort():
+    if perso_mort == True:
+        score = 0    #les point+compteur du score seront ajoutés après
+        
 
 
 #==================================================================
@@ -214,6 +225,7 @@ def update():                       #fonction de calcul periodique
         blocs_liste = blocs_deplacement(blocs_liste)
 
         perso_deplacement()
+        perso_mort()
             
 def draw(): 
     if not ingame:                      # fonction d'affichage periodique
