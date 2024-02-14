@@ -38,6 +38,7 @@ sol = 60
 hauteur_perso = 8
 saut = False
 mort = False
+pause = False
 
 blocs_liste = []
 
@@ -120,7 +121,16 @@ def perso_mort():
         saut = False #nécessaire?
 
 def menu_mort():
-    
+    if mort == True and btnp.(pyxel.KEY_RETURN):
+        mort = False
+
+def fct_pause():
+    if pause == False and btnp.(pyxel.KEY_TAB) and not mort:
+        pause = True
+        saut = False
+    elif pause == True and btnp.(pyxel.KEY_TAB) and not mort:
+        pause = False
+                                
 #==================================================================
 # fonction à appeler dans la fonction "update" du module principal
 #==================================================================
@@ -214,6 +224,10 @@ def update():                       #fonction de calcul periodique
     # appel de la fonction "update" du menu: à reporter dans module main
     if not ingame:
         menus_update()
+    elif not mort and pause == True:
+        for bloc in blocs_liste:
+        bloc[0] -= 0    
+    
     else:
         
         # creation des blocs
@@ -224,6 +238,7 @@ def update():                       #fonction de calcul periodique
 
         perso_deplacement()
         perso_mort()
+        menu_mort()
             
 def draw(): 
     if not ingame:                      # fonction d'affichage periodique
@@ -238,6 +253,9 @@ def draw():
         pyxel.cls(0)
         pyxel.text(20, 50, "Mort, appuie sur return pour recommencer", 7)
 
+    elif mort == False and pause == True:
+        pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
+        
     else:
         
         # vide la fenetre
