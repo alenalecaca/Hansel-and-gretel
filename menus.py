@@ -121,14 +121,14 @@ def perso_mort():
         saut = False #nécessaire?
 
 def menu_mort():
-    if mort == True and btnp.(pyxel.KEY_RETURN):
+    if mort == True and btnp(pyxel.KEY_RETURN):
         mort = False
 
 def fct_pause():
-    if pause == False and btnp.(pyxel.KEY_TAB) and not mort:
+    if pause == False and btnp(pyxel.KEY_TAB) and not mort:
         pause = True
         saut = False
-    elif pause == True and btnp.(pyxel.KEY_TAB) and not mort:
+    elif pause == True and btnp(pyxel.KEY_TAB) and not mort:
         pause = False
                                 
 #==================================================================
