@@ -111,7 +111,7 @@ def perso_deplacement():
         if perso_y >= sol:
             perso_y = sol
 
-def perso_tomber():
+def perso_mort():
     if perso_y >= sol:
         perso_mort = False
     else:
