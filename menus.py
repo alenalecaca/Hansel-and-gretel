@@ -226,7 +226,7 @@ def update():                       #fonction de calcul periodique
         menus_update()
     elif not mort and pause == True:
         for bloc in blocs_liste:
-        bloc[0] -= 0    
+            bloc[0] -= 0    
     
     else:
         
