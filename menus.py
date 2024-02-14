@@ -37,7 +37,7 @@ perso_y = 60
 sol = 60
 hauteur_perso = 8
 saut = False
-perso_mort = False
+mort = False
 
 blocs_liste = []
 
@@ -113,11 +113,14 @@ def perso_deplacement():
 
 def perso_mort():
     if perso_y >= sol:
-        perso_mort = False
+        mort = False
     else:
-        perso_mort = True
+        mort = True
         score = 0    #les point+compteur du score seront ajoutés après
+        saut = False #nécessaire?
 
+def menu_mort():
+    
 #==================================================================
 # fonction à appeler dans la fonction "update" du module principal
 #==================================================================
@@ -231,7 +234,7 @@ def draw():
      
     # appel de la fonction "draw" du menu: à reporter dans module main
         menu_draw()
-    elif perso_mort == True:
+    elif mort == True:
         pyxel.cls(0)
         pyxel.text(20, 50, "Mort, appuie sur return pour recommencer", 7)
 
