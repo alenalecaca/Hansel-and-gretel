@@ -260,6 +260,7 @@ def draw():
         
         # vide la fenetre
         pyxel.cls(0)
+        pyxel.load("res.pyxres")            # fichier ressources à renommer si besoin
 
         # blocs
         for bloc in blocs_liste:
