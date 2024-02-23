@@ -1,5 +1,3 @@
-# Pyxel Studio
-
 import pyxel, random
 
 # initialisation à remplacer par celles du projet final
@@ -39,7 +37,8 @@ hauteur_perso = 8
 saut = False
 #mort = False
 pause = False
-
+score = 0
+dif = 1
 blocs_liste = []
 
 ########################################################################
@@ -218,7 +217,7 @@ def menu_draw():
 ####################################################################
         
 def update():                       #fonction de calcul periodique
-    global blocs_liste
+    global blocs_liste, score
 
     # GESTION DES MENUS
     # appel de la fonction "update" du menu: à reporter dans module main
@@ -237,6 +236,8 @@ def update():                       #fonction de calcul periodique
         blocs_liste = blocs_deplacement(blocs_liste)
 
         perso_deplacement()
+
+        score = pyxel.frame_count
         #perso_mort()
         #menu_mort()
             
@@ -266,6 +267,19 @@ def draw():
         for bloc in blocs_liste:
             pyxel.rect(bloc[0], bloc[1], 8, 8, 8)
 
+        loc = 0
+        for i in str(score):
+            if i == "0": pyxel.blt(0+loc, 120, 0, 33, 16, 5, 7, 2)
+            elif i == "1": pyxel.blt(0+loc, 120, 0, 39, 16, 4, 7, 2)
+            elif i == "2": pyxel.blt(0+loc, 120,0, 44, 16, 4, 7, 2)
+            elif i == "3": pyxel.blt(0+loc, 120,0, 33, 24, 4, 7, 2)
+            elif i == "4": pyxel.blt(0+loc, 120,0, 39, 24, 4, 7, 2)
+            elif i == "5": pyxel.blt(0+loc, 120,0, 44, 24, 4, 7, 2)
+            elif i == "6": pyxel.blt(0+loc, 120,0, 49, 16, 4, 7, 2)
+            elif i == "7": pyxel.blt(0+loc, 120,0, 57, 16, 4, 7, 2)
+            elif i == "8": pyxel.blt(0+loc, 120,0, 49, 24, 4, 7, 2)
+            elif i == "9": pyxel.blt(0+loc, 120,0, 57, 24, 4, 7, 2)
+            loc += 5
 
         if pyxel.btn(pyxel.KEY_DOWN):
             if pyxel.frame_count % 15 < 5:
