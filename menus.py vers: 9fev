@@ -32,12 +32,13 @@ separ = 2                           # taille separateur entre touches
 x_menu = 5                          # place en X du menu
 y_menu = 90                         # place en Y du menu
 
+
 perso_x = 60
 perso_y = 60
 sol = 60
 hauteur_perso = 8
 saut = False
-#mort = False
+mort = False
 pause = False
 
 blocs_liste = []
@@ -112,24 +113,38 @@ def perso_deplacement():
         if perso_y >= sol:
             perso_y = sol
 
-#def perso_mort():
-    #if perso_y >= sol:
-        #mort = False
-    #else:
-        #mort = True
-        #score = 0    #les point+compteur du score seront ajoutés après
-        #saut = False #nécessaire?
+#n'apparait pas dans app.py
+def perso_mort():
+    global mort, sol
+    if perso_y <= sol:
+        mort = False
+    else:
+        mort = True 
+        saut = False #nécessaire?
 
-#def menu_mort():
-    #if mort == True and btnp(pyxel.KEY_RETURN):
-        #mort = False
+def recommencer():
+    global mort
+    if mort == True and pyxel.btnp(pyxel.KEY_RETURN):
+        perso_x = 60
+        perso_y = 60
+        mort = False
+
 
 def fct_pause():
-    if pause == False and btnp(pyxel.KEY_Q): #and not mort:
+    pyxel.mouse(True)
+    global mort, pause
+    if pause == False and pyxel.btnp(pyxel.KEY_SPACE) and not mort:
         pause = True
         saut = False
-    elif pause == True and btnp(pyxel.KEY_Q): #and not mort:
+    elif pause == True and pyxel.btnp(pyxel.KEY_SPACE) and not mort:
         pause = False
+
+def fct_souris():
+    if ingame == True:
+        pyxel.mouse(False)
+    else:
+        pyxel.mouse(True)
+
                                 
 #==================================================================
 # fonction à appeler dans la fonction "update" du module principal
@@ -224,9 +239,9 @@ def update():                       #fonction de calcul periodique
     # appel de la fonction "update" du menu: à reporter dans module main
     if not ingame:
         menus_update()
-    #elif not mort and pause == True:
-        #for bloc in blocs_liste:
-            #bloc[0] -= 0    
+    elif not mort and pause == True:
+        for bloc in blocs_liste:
+            bloc[0] -= 0    
     
     else:
         
@@ -237,30 +252,35 @@ def update():                       #fonction de calcul periodique
         blocs_liste = blocs_deplacement(blocs_liste)
 
         perso_deplacement()
-        #perso_mort()
-        #menu_mort()
+    
+
+    fct_pause()
+    perso_mort()
+    recommencer()
+    fct_souris()
             
 def draw(): 
     if not ingame:                      # fonction d'affichage periodique
         pyxel.cls(0)                    # effacement ecran
-        pyxel.rect(10, 10, 20, 20, 11)
-        pyxel.rect(20,20,80,20,12)
-        pyxel.text(30, 27, "Hansel & Gretel", 8 )
      
     # appel de la fonction "draw" du menu: à reporter dans module main
         menu_draw()
-    #elif mort == True:
-        #pyxel.cls(0)
-        #pyxel.text(20, 50, "Mort, appuie sur return pour recommencer", 7)
+    elif mort == True and pause == False:
+        pyxel.cls(0)
+        pyxel.text(7, 50, "Mort, return pour recommencer", 7)
 
-    elif pause == True: #and mort == False:
+    elif pause == True and mort == False:
+        global bloc, blocs_liste
+        pyxel.cls(0)
         pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
+        pyxel.rect(bloc[0], bloc[1], 8, 8, 8)
         
     else:
         
         # vide la fenetre
         pyxel.cls(0)
         pyxel.load("res.pyxres")            # fichier ressources à renommer si besoin
+
 
         # blocs
         for bloc in blocs_liste:
