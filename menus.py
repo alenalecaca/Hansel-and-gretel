@@ -31,7 +31,6 @@ y_menu = 90                         # place en Y du menu
 ########################################################################
 # zone_touche: calcule les intervalles de zone sensible d'une touche
 # dit sur le point x,y est dans la zone de la touche num_touche
-
 def zone_touche(num_touche,x,y):     #
     x_min = x_menu + num_touche*(lg_touche+separ)
     x_max = x_min + lg_touche

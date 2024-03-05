@@ -26,7 +26,7 @@ def update():                       #fonction de calcul periodique
                                     # False sinon
     
     else:
-        game_update()               # actuellement il n'y a rien de prevu pour rebasculer "ingame" à faux
+        ingame=game_update()               # actuellement il n'y a rien de prevu pour rebasculer "ingame" à faux
                                     # si on le faisait on pourrait revenir à l'écran de menus
  
             
