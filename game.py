@@ -75,6 +75,7 @@ def menu_mort():
         mort = False
 
 def fct_pause():
+    pyxel.mouse(True)
     global pause
     global saut
     global mort
@@ -84,7 +85,7 @@ def fct_pause():
         saut = False
     elif pause == True and pyxel.btnp(pyxel.KEY_TAB) and not mort:
         pause = False
-                                
+                               
 # def platforme(sol,perso x, perso y)
 #if perso à tel endroit de la map:
 #perso descend de tel carré selon la texture?
