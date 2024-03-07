@@ -85,6 +85,12 @@ def fct_pause():
         saut = False
     elif pause == True and pyxel.btnp(pyxel.KEY_TAB) and not mort:
         pause = False
+
+def fct_souris():
+    if ingame == True:
+        pyxel.mouse(False)
+    else:
+        pyxel.mouse(True)
                                
 # def platforme(sol,perso x, perso y)
 #if perso à tel endroit de la map:
@@ -142,9 +148,10 @@ def game_update():                  #fonction de calcul periodique
         # mise a jour des positions des blocs
         blocs_liste = blocs_deplacement(blocs_liste)
 
-        perso_deplacement()
-        perso_mort()
-        menu_mort()
+      perso_deplacement()
+      perso_mort()
+      menu_mort()
+      fct_souris()
 
 
 #==================================================================================
