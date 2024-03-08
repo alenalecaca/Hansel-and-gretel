@@ -159,6 +159,7 @@ def menu_mort():
     # il faut sans doute tout reinitialiser pour recommence, ou mettre ingame à False
 
 def fct_pause():
+    pyxel.mouse(True)
     global pause
     global saut
     global mort
@@ -168,7 +169,13 @@ def fct_pause():
         saut = False
     elif pause == True and pyxel.btnp(pyxel.KEY_TAB) and not mort:
         pause = False
-                                
+
+def fct_souris():
+    if ingame == True:
+        pyxel.mouse(False)
+    else:
+        pyxel.mouse(True)
+                               
 
 #=================================?????=====================================
 # fonction à appeler à l'initialisation dans le module principal
@@ -259,6 +266,8 @@ def game_update():                  #fonction de calcul periodique
         if restart:
             game_init() 
         return(True)            # affecté à ingame: on reste en jeu
+
+     # fct_souris()
 
 
 #==================================================================================
