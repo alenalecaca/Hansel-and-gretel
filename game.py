@@ -2,31 +2,92 @@
 
 import pyxel, random
 
-# initialisation à remplacer par celles du projet final
-# pyxel.init(128, 128)                #initialidstaion ecran 
-
-
-
+# Pyxel est initialisé dans le module principal
+# par "pyxel.init(128, 128) ""               #initialidstaion ecran 
 
 
 # intialisations jeu
 
-perso_x = 60
-perso_y = 60
-sol = 60
-hauteur_perso = 8
+perso_x = 60                # position X perso (à gauche)
+perso_y = 60                # position Y perso (en haut)
+sol = 60                    # position du sol à la position courante X du perso
+hauteur_perso = 16          # hauteur afficahage personnage: toujours 16
+taille_perso = 16           # taille su perso (pour future collisions front) 16 si debout, 11 si rampe
+lg_perso = 13               # longueur en X du perso
+h_debout = 16               # constante: hauteur perso debout
+h_rampe = 11                # constante: hauteur perso rampant
 saut = False
 mort = False
 pause = False
+rampe = False
+max_saut = 1                # hauteur max saut (haut gauche du perso)
 
-blocs_liste = []
+blocs_liste = []            # liste des blocs deco, chque bloc = carré de 8x8
 
+plats_liste = []      #liste des plateformes
+                      # tableau de couples [X,Y] position haut gauche des plateformes
+lg_plat = 40          # constante: longueur d'une plateforme = 5 carrés de 8
+lg_trou = 24          # constante: longueur des trous entre plaeformes = 3 carrés de 8
+ht_plat = 4           # constante: hauteur plateforme
+restart = False         # redemarrer une session de jeu
+timing_plat = 60        #nb frames pyxrl d'attente entre les plateformes
 
 ########################################################################
 ############### FONCTIONS LOCALES ######################################
 ########################################################################
 
+#=======================================================================
+# GESTION DES PLATEFORMES
+#=======================================================================
+def platforms_creation(plats_liste):
+    """création aléatoire de plateformes"""
+    global h_debout, ht_plat
+    # une plateforme toutes les X frame, a ajuster en fonction de la jouabilité
+    if (pyxel.frame_count % timing_plat == 0):
+        plats_liste.append([120, random.randint(0+h_debout+8, 128-ht_plat)])
+    return plats_liste
+
+def platforms_deplacement(plats_liste):
+    global timing_plat              # nb frames Pyxel entre les plateformes
+    """déplacement des plateformes vers la gauche et suppression s'ils sortent du cadre"""
+    for plat in plats_liste:
+        plat[0] -= 1                # on recule d'un pixel
+        if  (plat[0]+lg_plat)<0:              # si la fin du bloc sort du cadre, on le supprime
+            plats_liste.remove(plat)
+    return plats_liste
   
+def update_sol():
+    global plats_liste
+    global sol
+    global lg_perso             # longueur en X du perso
+    global perso_x              # position en X du debut du perso
+    # on cherche si une plateforme est presente au niveau X du perso
+    # si oui, on ajuste "sol" à la hauteur de cette plateforme (+ la hauteur du perso)
+    exist_plat_en_x=False 
+    plat_en_x = [0,0]           # pour debug
+    plat=[0,0]                  # pour debug
+    for plat in plats_liste:
+        # pour chaque platefaorme, voir si elle est en position du perso
+        # pour un meilleur rendu, on enleve 2 pixels de chque côté à la place occupée par le perso
+        # on cherche donc entre perso_x+2 et perso_x+lg_perso-2
+        # pour etre sur la platforme ilfaut que le perso morde par sa droite de plus de 2 pixels sur la gauche de la plateforme
+        #                                et que le perso soit encore sur sa gauche sur la plateforme de plus de 2 pixels
+        if ((perso_x+lg_perso)>=plat[0]) and ((perso_x +2)<(plat[0]+lg_plat)):
+            sol=plat[1]                          # alors le sol est defini par cette plateforme
+            exist_plat_en_x = True
+            plat_en_x = plat
+    if not exist_plat_en_x:                           # sinon c'est un trou: on tombe
+        sol = 128
+    # DEBUG
+    #  print("exit plat = ", exist_plat_en_x)
+    #   print("plateforme en X = ", plat_en_x)
+    #  print("platforme ex x de ", plat_en_x[0]," a ", plat_en_x[0]+lg_plat)
+    #   print("sol= ",sol)
+    #   xxx=input("taper une touche pour continuer")
+ 
+#=======================================================================
+# GESTION DES BLOCS DECO
+#=======================================================================
 ###### de app.py ###########
 def blocs_creation(blocs_liste):
     """création aléatoire de blocs"""
@@ -46,33 +107,56 @@ def blocs_deplacement(blocs_liste):
             blocs_liste.remove(bloc)
     return blocs_liste
 
-def perso_deplacement():
-    global perso_y, sol, saut
 
-    if pyxel.btnp(pyxel.KEY_UP) and perso_y == sol:
+#========================================================================
+# GESTION DU PERSONNAGE
+#========================================================================
+def perso_deplacement():
+    global perso_y, sol, saut, rampe, taille_perso, hauteur_perso, h_rampe, h_debout, max_saut, mort
+
+
+    rampe = pyxel.btn(pyxel.KEY_DOWN) and (perso_y+hauteur_perso == sol)
+    # mise à jour taille max personnage, pour  gestion collisions
+    # pour l'affichage on affiche toujeur 16 pix de haut actuellement
+    if rampe:
+        taille_perso = h_rampe 
+    else:
+        taille_perso = h_debout
+
+    #gestion des sauts (monte en plusieurs fois jusqu'à la hauteur max_saut)
+    if pyxel.btnp(pyxel.KEY_UP) and ((perso_y+hauteur_perso) == sol):
         saut = True
     if saut:
         perso_y -=3
-        if perso_y <= 40:
+        if perso_y <= max_saut:         # on a depassé la hauteur max (inversé): on retombe au sol
             saut = False
     else:
-        perso_y +=3
-        if perso_y >= sol:
-            perso_y = sol
+        perso_y +=3                         # on est plus en saut, on retombe petit à petit au sol
+        if perso_y >= 128-hauteur_perso:
+            mort = True
+         #   print("mort update")
+        elif perso_y >= sol-hauteur_perso:    # si on est un peusous le sol, on revient au sol
+                perso_y = sol-hauteur_perso     # ===> sera à modifier: CA EMPECHE LES CHUTES =================== 
+
+
 
 def perso_mort():
-    if perso_y >= sol:
+    if perso_y+hauteur_perso >= sol:
         mort = False
     else:
         mort = True
-        score = 0    #les point+compteur du score seront ajoutés après
-        saut = False #nécessaire?
+        score = 0       #les point+compteur du score seront ajoutés après
+        saut = False    #nécessaire?
 
 def menu_mort():
     global mort
-
-    if mort == True and pyxel.btnp(pyxel.KEY_RETURN):
+    global restart
+    # si le personnage est mort, on attend un "return"
+    if mort and pyxel.btnp(pyxel.KEY_RETURN):
         mort = False
+        restart=True
+    
+    # il faut sans doute tout reinitialiser pour recommence, ou mettre ingame à False
 
 def fct_pause():
     pyxel.mouse(True)
@@ -92,10 +176,7 @@ def fct_souris():
     else:
         pyxel.mouse(True)
                                
-# def platforme(sol,perso x, perso y)
-#if perso à tel endroit de la map:
-#perso descend de tel carré selon la texture?
-        
+
 #=================================?????=====================================
 # fonction à appeler à l'initialisation dans le module principal
 # initialisations des fonctions de jeu
@@ -103,55 +184,90 @@ def fct_souris():
 def game_init():
 # intialisations jeu
 
-    global perso_x
-    global perso_y
-    global sol
-    global hauteur_perso
-    global saut
-    global mort
-    global pause
-    global blocs_liste
+    global perso_x                # position personnage
+    global perso_y                # position personnage
+    global sol                    # hauteur (y) du sol courant (a la position x du personnage)
+    global hauteur_perso          # hauteur du personnage pour affichage; toujours 16
+    global lg_perso               # longueur en X du perso
+    global taille_perso           # taille du personnage pour gere collisions front: 16 si debout, 11 si rampe
+    global h_debout               # constante hauteur debout pour init
+    global saut                   # "on est en train de sauter"
+    global mort                   # "le personnage est mort"
+    global pause                  # "le jeu est en pause"
+    global rampe                  # "le personnage rampe"
+    global blocs_liste            # liste des blocs (decor) à afficher
+    global plats_liste
+    global max_saut               # hauteur max des suts (attention axe y inversé)
+    global restart
+    global timing_plat
 
     # intialisations jeu
    
-    perso_x = 60
-    perso_y = 60
-    sol = 60
-    hauteur_perso = 8
-    saut = False
-    mort = False
-    pause = False
+    perso_x = 60                # position personnage
+    perso_y = 60                # position personnage
+    sol = 60                    # hauteur (y) du sol courant (a la position x du personnage)
+    hauteur_perso = 16          # hauteur affichahge du personnage (toujours = 16)
+    taille_perso = 16           # taille su perso (pour future collisions front) 16 si debout, 11 si rampe
+    lg_perso = 13               # longueur en X du perso
+    saut = False                # on est pas en saut
+    mort = False                # on n'est pas mort
+    pause = False               # on n'est pas en pause
+    rampe = False               # on n'est pas en train de ramper
+    max_saut = 1                # hauteur max des sauts (à parti du haut, inversé)
 
-    blocs_liste = []
+    blocs_liste = []            # liste des blocs (decor) à afficher, rien au depart
 
-  
+    plats_liste = []        #liste des plateformes
+                            # tableau de couples [X,Y] position haut gauche des plateformes
+    lg_plat = 40            # constante: longueur d'une plateforme = 5 carrés de 8
+                            # plus tard on pourra faire les tailles variables
+    lg_trou = 24            # constante: longueur des trous entre plaeformes = 3 carrés de 8
+                            # pas utilisé pour l'instant (just un délai)
+    ht_plat = 4             # constante: hauteur plateforme
+                            # pas utilisé pour l'instant
+    restart = False         # redemarrer une session de jeu
     
-
+    plats_liste=[[10,60],[65,60]]  # premiers blocs pour ne pas tomber tout de suite
+    timing_plat = 60        #nb frames pyxrl d'attente entre les plateformes
 
 #===================================================================================
-# fonction à appeler dans la fonction "update" du module principal si ingame==True
+# fonction à appeler dan la fonction "update" du module principal si ingame==True
 #===================================================================================       
 def game_update():                  #fonction de calcul periodique
     global blocs_liste
+    global plats_liste
+    global mort
+    global pause
+    global restart
     global mort
     global pause
 
-    if not mort and pause == True:
+    if not mort and pause == True:              # on est en pause
         for bloc in blocs_liste:
             bloc[0] -= 0    
     
-    else:
+    else:                                       # on n'est pas en pause
         
         # creation des blocs
         blocs_liste = blocs_creation(blocs_liste)
-
         # mise a jour des positions des blocs
         blocs_liste = blocs_deplacement(blocs_liste)
 
-      perso_deplacement()
-      perso_mort()
-      menu_mort()
-      fct_souris()
+        # creation des plateformes
+        plats_liste = platforms_creation(plats_liste)
+        # mise a jour des positions des blocs
+        plats_liste = platforms_deplacement(plats_liste)
+
+        update_sol()
+        perso_deplacement()
+
+     #   perso_mort()
+        menu_mort()
+        if restart:
+            game_init() 
+        return(True)            # affecté à ingame: on reste en jeu
+
+     # fct_souris()
 
 
 #==================================================================================
@@ -163,17 +279,17 @@ def game_draw():
     global perso_x
     global perso_y
     global blocs_liste
+    global plats_liste
+    global rampe
      
     pyxel.mouse(False)                   # rendre le curseur in visible
 
-    #if perso à tel endroit de la map:
-    #afficher la texture à rajouter au moment ou il y a une marche
-    
-    if mort == True:
+    if mort:
         pyxel.cls(0)
         pyxel.text(20, 50, "Mort, appuie sur return pour recommencer", 7)
+        # print("mort main loop")
 
-    elif mort == False and pause == True:
+    elif pause:
         pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
         
     else:
@@ -185,7 +301,13 @@ def game_draw():
         for bloc in blocs_liste:
             pyxel.rect(bloc[0], bloc[1], 8, 8, 8)
 
-        if pyxel.btn(pyxel.KEY_DOWN):
+        # plateformes
+        for plat in plats_liste:
+            pyxel.rect(plat[0], plat[1], lg_plat, ht_plat, 4)  # a remplacer par dessin pyxres
+        # afficher personnage par effet progressif (3 trames)
+        # en fonction de si il est debout/sautant ou rampant
+        # on affiche sur hauteur 16 qqsoit le dessin
+        if rampe:
             if pyxel.frame_count % 15 < 5:
                 pyxel.blt(perso_x, perso_y, 0, 14, 16, 16, 16, 2)
             elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
