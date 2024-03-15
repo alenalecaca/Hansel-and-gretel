@@ -14,7 +14,7 @@ import pyxel, random
 
 
 # intialisations jeu
-
+difficulté = 1
 perso_x = 60                # position X perso (à gauche)
 perso_y = 60                # position Y perso (en haut)
 sol = 76                    # position du sol à la position courante X du perso + sa hauteur
@@ -93,7 +93,7 @@ def update_sol():
 # GESTION DU PERSONNAGE
 #========================================================================
 def perso_deplacement():
-    global perso_y, sol, saut, rampe, taille_perso, hauteur_perso, h_rampe, h_debout, max_saut, mort, score
+    global perso_x, perso_y, sol, saut, rampe, taille_perso, hauteur_perso, h_rampe, h_debout, max_saut, mort, score
 
 
     rampe = pyxel.btn(pyxel.KEY_DOWN) and (perso_y+hauteur_perso == sol)
@@ -101,6 +101,7 @@ def perso_deplacement():
     # pour l'affichage on affiche toujeur 16 pix de haut actuellement
     if rampe:
         taille_perso = h_rampe 
+        perso_x += 1
     else:
         taille_perso = h_debout
 
