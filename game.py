@@ -14,11 +14,11 @@ import pyxel, random
 
 
 # intialisations jeu
-
+difficulté = 1
 perso_x = 60                # position X perso (à gauche)
 perso_y = 60                # position Y perso (en haut)
 sol = 76                    # position du sol à la position courante X du perso + sa hauteur
-hauteur_perso = 16          # hauteur afficahage personnage: toujours 16
+hauteur_perso = 16          # hauteur affichage personnage: toujours 16
 taille_perso = 16           # taille su perso (pour future collisions front) 16 si debout, 11 si rampe
 lg_perso = 13               # longueur en X du perso
 h_debout = 16               # constante: hauteur perso debout
@@ -28,8 +28,8 @@ mort = False
 pause = False
 rampe = False
 max_saut = 1                # hauteur max saut (haut gauche du perso)
-
-blocs_liste = []            # liste des blocs deco, chque bloc = carré de 8x8
+sorciere_x=5                # position X de la sorcière (actuellement unité arbitraire)
+sorciere_y=85               # position Y de la sorcière (actuellement unité arbitraire)
 
 plats_liste = []      #liste des plateformes
                       # tableau de couples [X,Y] position haut gauche des plateformes
@@ -91,34 +91,11 @@ def update_sol():
     #print("sol= ",sol)
     #xxx=input("taper une touche pour continuer")
  
-#=======================================================================
-# GESTION DES BLOCS DECO
-#=======================================================================
-###### de app.py ###########
-def blocs_creation(blocs_liste):
-    """création aléatoire de blocs"""
-
-    # un bloc par seconde
-    if (pyxel.frame_count % 30 == 0):
-        blocs_liste.append([120, random.randint(0, 120)])
-    return blocs_liste
-
-def blocs_deplacement(blocs_liste):
-    """déplacement des blocs vers la gauche et suppression s'ils sortent du cadre"""
-    """mouvement avec les touches de directions"""
-#variables blocs provisoires, juste pour montrer l'effet de scrolling    
-    for bloc in blocs_liste:
-        bloc[0] -= 1
-        if  bloc[0]<0:
-            blocs_liste.remove(bloc)
-    return blocs_liste
-
-
 #========================================================================
 # GESTION DU PERSONNAGE
 #========================================================================
 def perso_deplacement():
-    global perso_y, sol, saut, rampe, taille_perso, hauteur_perso, h_rampe, h_debout, max_saut, mort, score
+    global perso_x, perso_y, sol, saut, rampe, taille_perso, hauteur_perso, h_rampe, h_debout, max_saut, mort, score
 
 
     rampe = pyxel.btn(pyxel.KEY_DOWN) and (perso_y+hauteur_perso == sol)
@@ -126,6 +103,7 @@ def perso_deplacement():
     # pour l'affichage on affiche toujeur 16 pix de haut actuellement
     if rampe:
         taille_perso = h_rampe 
+        perso_x += 1
     else:
         taille_perso = h_debout
 
@@ -153,18 +131,8 @@ def perso_deplacement():
 
 
 
-
-def perso_mort():
-    if perso_y+hauteur_perso >= sol:
-        mort = False
-    else:
-        mort = True
-        score = 0       #les point+compteur du score seront ajoutés après
-        saut = False    #nécessaire?
-
 def menu_mort():
-    global mort
-    global restart
+    global mort, restart
     # si le personnage est mort, on attend un "return"
     if mort and pyxel.btnp(pyxel.KEY_RETURN):
         mort = False
@@ -173,9 +141,7 @@ def menu_mort():
     # il faut sans doute tout reinitialiser pour recommence, ou mettre ingame à False
 
 def fct_pause():
-    global pause
-    global saut
-    global mort
+    global pause, saut, mort
 
     if pause == False and pyxel.btnp(pyxel.KEY_TAB) and not mort:
         pause = True
@@ -183,6 +149,25 @@ def fct_pause():
     elif pause == True and pyxel.btnp(pyxel.KEY_TAB) and not mort:
         pause = False
                                 
+
+def sorciere():
+    global mort, sorciere_x, sorciere_y, 
+    if perso_x <= 40:                           #si le personnage passe 40px, la sorciere commence à descendre
+        sorciere_y = sorciere_y - (40-perso_x)
+    if perso_x >= 40 and perso_x < 60:
+        sorciere_y =  sorciere_y - (40-perso_x)
+    else:
+        sorciere_y = 85
+
+def perso_mort():
+    if perso_x == sorciere_x and perso_y == sorciere_y:
+        mort = True
+        score = 0
+        saut = False # necessaire?
+    else:
+        mort = False
+
+
 
 #=================================?????=====================================
 # fonction à appeler à l'initialisation dans le module principal
@@ -202,7 +187,6 @@ def game_init():
     global mort                   # "le personnage est mort"
     global pause                  # "le jeu est en pause"
     global rampe                  # "le personnage rampe"
-    global blocs_liste            # liste des blocs (decor) à afficher
     global plats_liste
     global max_saut               # hauteur max des suts (attention axe y inversé)
     global restart
@@ -222,6 +206,8 @@ def game_init():
     rampe = False               # on n'est pas en train de ramper
     max_saut = 1                # hauteur max des sauts (à parti du haut, inversé)
     score = 0
+    sorciere_x=5
+    sorciere_y=85
 
     blocs_liste = []            # liste des blocs (decor) à afficher, rien au depart
 
@@ -242,7 +228,6 @@ def game_init():
 # fonction à appeler dan la fonction "update" du module principal si ingame==True
 #===================================================================================       
 def game_update():                  #fonction de calcul periodique
-    global blocs_liste
     global plats_liste
     global mort
     global pause
@@ -250,30 +235,23 @@ def game_update():                  #fonction de calcul periodique
     global mort
     global pause
 
-    if not mort and pause == True:              # on est en pause
-        for bloc in blocs_liste:
-            bloc[0] -= 0    
+   
     
-    else:                                       # on n'est pas en pause
-        
-        # creation des blocs
-        blocs_liste = blocs_creation(blocs_liste)
-        # mise a jour des positions des blocs
-        blocs_liste = blocs_deplacement(blocs_liste)
-
+    #else:                                       # on n'est pas en pause
         # creation des plateformes
-        plats_liste = platforms_creation(plats_liste)
+    plats_liste = platforms_creation(plats_liste)
         # mise a jour des positions des blocs
-        plats_liste = platforms_deplacement(plats_liste)
+    plats_liste = platforms_deplacement(plats_liste)
 
-        update_sol()
-        perso_deplacement()
+    update_sol()
+    perso_deplacement()
+    fct_pause()
 
      #   perso_mort()
-        menu_mort()
-        if restart:
-            game_init() 
-        return(True)            # affecté à ingame: on reste en jeu
+    menu_mort()
+    if restart:
+        game_init() 
+    return(True)            # affecté à ingame: on reste en jeu
 
 
 #==================================================================================
@@ -284,7 +262,6 @@ def game_draw():
     global pause
     global perso_x
     global perso_y
-    global blocs_liste
     global plats_liste
     global rampe
      
@@ -292,20 +269,16 @@ def game_draw():
 
     if mort:
         pyxel.cls(0)
-        pyxel.text(20, 50, "Mort, appuie sur return pour recommencer", 7)
+        pyxel.text(15, 50, "MORT appuie sur return", 7)
         # print("mort main loop")
 
     elif pause:
-        pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
+        #vide pour le moment
         
     else:
         
         # vide la fenetre
         pyxel.cls(0)
-
-        # blocs
-        for bloc in blocs_liste:
-            pyxel.rect(bloc[0], bloc[1], 8, 8, 8)
 
         # plateformes
         for plat in plats_liste:
@@ -327,6 +300,3 @@ def game_draw():
                 pyxel.blt(perso_x, perso_y, 0, 0, 32, 13, 16, 2)
             else:
                 pyxel.blt(perso_x, perso_y, 0, 0, 64, 13, 16, 2)
-
-
-
