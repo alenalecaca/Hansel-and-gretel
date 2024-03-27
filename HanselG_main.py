@@ -12,7 +12,7 @@ from game import game_init, game_draw, game_update
 
 # initialisation globale
 pyxel.init(128, 128)                   #initialidstaion ecran 
-pyxel.load("res2.pyxres")              # fichier ressources à renommer si besoin
+pyxel.load("res.pyxres")              # fichier ressources à renommer si besoin
 
 ingame = False                          # = on est dans le jeu, donc pas dans le menu
                                         # si besoin on peut remplacer le booleen par une variable à plusieurs valeurs

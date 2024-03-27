@@ -64,7 +64,7 @@ def affiche_menu(menu):             # affiche les touches de "menu" (tableau)
         # afficher en x_menu+(numero touche * lg-touche), y_menu
         # le dessin situé en 0, ht_touche*code fonction
         # de taille lg_touche sur ht_touche
-        pyxel.blt(x_menu+ind*(lg_touche+separ),y_menu,1,0,ht_touche*menu[ind],lg_touche,ht_touche)
+        pyxel.blt(x_menu+ind*(lg_touche+separ),y_menu,0,0,ht_touche*menu[ind],lg_touche,ht_touche)
 
                                 
 #==================================================================
@@ -147,7 +147,9 @@ def menus_init():
 def menus_draw():
     global menu_touches
 
-    pyxel.cls(0)                    # effacement ecran
+    pyxel.load("menus.pyxres")              # fichier ressources à renommer si besoin
+    pyxel.cls(0)                            # effacement ecran
+
     pyxel.rect(10, 10, 20, 20, 11)
     pyxel.rect(20,20,80,20,12)
     pyxel.text(30, 27, "Hansel & Gretel", 8 )
