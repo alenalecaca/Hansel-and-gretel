@@ -44,7 +44,7 @@ obst_liste = []             # liste des obstacles actifs, pour chaque obstacle:
                             # coord X (gauche obstacle)
                             # type obstacle
 # liste des 6 types d'obstacles et leur tailles: constantes, ne pas toucher
-# [largeur, hauteur, traversable en rampant] à mettre à jour après design des obstacles
+# [largeur, hauteur, mortel par contact] à mettre à jour après design des obstacles
 obst_types = [[8,8,False],[8,8,False],[8,8,False],[8,8,False],[8,8,False],[8,8,False]]
 
 #####################################################################################################
@@ -112,7 +112,7 @@ def game_init():
                                 # coord X (gauche obstacle)
                                 # type obstacle
     # liste des 6 types d'obstacles et leur tailles: constantes, ne pas toucher
-    # [largeur, hauteur, traversable en rampant] à mettre à jour après design des obstacles
+    # [largeur, hauteur, mortel par contact] à mettre à jour après design des obstacles
     obst_types = [[8,8,False],[8,10,False],[8,12,False],[8,16,False],[8,15,False],[8,8,False]]
 
 #####################################################################################################
@@ -164,7 +164,7 @@ def platforms_deplacement(plats_liste):
 # gestion du sol haut généré par les plateformes
 def update_sol():
     global plats_liste
-    global sol
+    global sol, sol_bas
     global lg_perso             # longueur en X du perso
     global perso_x              # position en X du debut du perso
     # on cherche si une plateforme est presente au niveau X du perso
@@ -183,7 +183,7 @@ def update_sol():
             exist_plat_en_x = True
             plat_en_x = plat
     if not exist_plat_en_x:                           # sinon c'est un trou: on tombe
-        sol = 128
+        sol = sol_bas                               # necessite de calculer d'abord sol_bas
     # DEBUG
     #print("exist plat = ", exist_plat_en_x)
     #print("plateforme en X = ", plat_en_x)
@@ -199,7 +199,7 @@ def update_sol_bas():
     global perso_x              # position en X du debut du perso
     # on cherche si un obstacle est present au niveau X du perso
     # si oui, on ajuste "sol_bas" à la hauteur du haut de cet obstacle
-    exist_obst_en_x=False 
+    exist_obst_en_x = False 
     obst_en_x = [0,0]           # pour debug
     obst=[0,0]                  # pour debug
     for obst in obst_liste:
@@ -213,17 +213,35 @@ def update_sol_bas():
         lgobst=tpdesc[0]                # largeur de ce type d'obstacle
         htobst=tpdesc[1]                # hauteur de ce type d'obstacle
         if ((perso_x+lg_perso)>=obst[0]+2) and ((perso_x +2)<(obst[0]+lgobst)):
-            sol_bas=plancher+htobst     # alors le sol-bas est defini par cet obstacle
+            sol_bas=plancher-htobst     # alors le sol-bas est defini par cet obstacle
             exist_obst_en_x = True
             obst_en_x = obst
     if not exist_obst_en_x:              # sinon c'est le sol bas normal (plancher)
         sol_bas = plancher
+
     # DEBUG
     #print("exist obst = ", exist_obst_en_x)
     #print("obstacle en X = ", obst_en_x)
     #print("obstacle en x de ", obst_en_x[0]," a ", obst_en_x[0]+lg_obst)
     #print("sol_bas= ",sol_bas)
     #xxx=input("taper une touche pour continuer")
+
+def pousse_ou_tue():
+    global perso_x, perso_y, hauteur_perso, sol, sol_bas, plancher, obst_liste, obst_types, lg_perso, mort
+    # dit si le perso touche un obstacle par sa droite
+    # si oui il faufdra décaler le perso en X à gauche de 1 position (comme l'obstacle)
+    # gestion des collisions avec obstacles et poussage à gauche
+    if perso_y+hauteur_perso == plancher:
+        for obst in obst_liste:
+            tpobst=obst[1]                  # type d'obtacle
+            tpdesc= obst_types[tpobst]      # triplet de description du type
+            htobst=tpdesc[1]                # hauteur de ce type d'obstacle
+            mortel = tpdesc[2]              # tue par contact
+            if perso_x+lg_perso==obst[0]-1: # le perso est juste à gauche de l'obstacle
+                if mortel:
+                    mort = True
+                else:
+                    perso_x -= 1
         
 #=======================================================================
 # GESTION DES BLOCS DECO
@@ -251,6 +269,8 @@ def blocs_deplacement(blocs_liste):
 #========================================================================
 # GESTION DU PERSONNAGE
 #========================================================================
+
+
 def perso_deplacement():
     global perso_y, sol, saut, rampe, taille_perso, hauteur_perso, h_rampe, h_debout, max_saut, mort, score
 
@@ -264,8 +284,9 @@ def perso_deplacement():
         taille_perso = h_debout
 
     #gestion des sauts (monte en plusieurs fois jusqu'à la hauteur max_saut)
-    
-    if pyxel.btnp(pyxel.KEY_UP) and ((perso_y+hauteur_perso) == sol):
+    bas_perso = perso_y+hauteur_perso
+    if pyxel.btnp(pyxel.KEY_UP) and ((bas_perso == sol)or(bas_perso == sol_bas)):
+        # on ne peut commencer un saut que si on est au sol: plateforme ou bas
         saut = True
         score += 1                          # a confirmer =score = nombre de sauts
         print(" score = ", score)
@@ -274,18 +295,19 @@ def perso_deplacement():
             perso_y -=3
             if perso_y <= max_saut:         # on a depassé la hauteur max (inversé): on retombe au sol
                 saut = False
-        else:
+        else:                               # on a arreté d'appuyer sur fleche haut
             saut = False
     else:
-        if (perso_y+hauteur_perso)<=sol:
-            perso_y = min(perso_y+3,sol-hauteur_perso)         # on est plus en saut, on retombe petit à petit au sol
+        # on retombe ou on reste au sol
+        # si on a une platefome, ou aura toujours sol <= sol_bas
+        # on teste d'abord la plateforme, puis le sol bas
+        if bas_perso<=sol:                                  # on est encore en l'air au dessus d'une plateforme
+            perso_y = min(perso_y+3,sol-hauteur_perso)      # on retombe de 3 pixels, ou on touche la plateforme
         else:
-            perso_y += 3
-        if perso_y >= 128-hauteur_perso:         # si on est en bas: on est tombé, donc on est mort
-            mort = True
-         #   print("mort update")
+            perso_y = min(perso_y+3,sol_bas-hauteur_perso)  # on retombe de 3 pixels, ou on touche le sol ou au dessus d'un obstacle
 
-
+    # gestion des collisions et poussage
+    pousse_ou_tue()
 
 
 def perso_mort():
@@ -354,8 +376,8 @@ def game_update():                  #fonction de calcul periodique
         # mise a jour des positions des obstacles
         obst_liste = obstacles_deplacement(obst_liste)
         
-        update_sol()
-        update_sol_bas()
+        update_sol_bas()        # a faire avant update_sol
+        update_sol()            # necessite sol_bas
         perso_deplacement()
 
      #   perso_mort()
