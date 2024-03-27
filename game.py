@@ -75,7 +75,7 @@ def game_init():
 
     # intialisations jeu
    
-    perso_x = 60                # position personnage
+    perso_x = 90                # position personnage
     perso_y = 60                # position personnage
     sol = 76                    # hauteur (y) du sol courant (a la position x du personnage+ sa hauteur)
     hauteur_perso = 16          # hauteur affichahge du personnage (toujours = 16)
@@ -111,8 +111,11 @@ def game_init():
                                 # coord X (gauche obstacle)
                                 # type obstacle
     # liste des 6 types d'obstacles et leur tailles: constantes, ne pas toucher
-    # [largeur, hauteur, mortel par contact] à mettre à jour après design des obstacles
-    obst_types = [[8,8,False],[8,10,False],[8,12,False],[8,16,False],[8,15,False],[8,8,False]]
+    # [largeur, hauteur, mortel, posx, posy] à mettre à jour après design des obstacles
+    # largeur / hauteur du dessin
+    # mortel: True/False = c'est un obstacle mortel
+    # posx, posy = position en x,y du haut:gauche dessin dans le fichier pyxres
+    obst_types = [[8,8,False,0,0],[8,10,False,0,0],[3,20,True,0,0],[8,16,False,0,0],[8,15,False,0,0],[8,8,False,0,0]]
 
 #####################################################################################################
 ############### FONCTIONS LOCALES ###################################################################
@@ -241,6 +244,9 @@ def pousse_ou_tue():
                     mort = True
                 else:
                     perso_x -= 1
+                    if perso_x < 0:
+                        mort = True 
+
         
 #========================================================================
 # GESTION DU PERSONNAGE
@@ -384,7 +390,7 @@ def game_draw():
         pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
         
     else:
-        pyxel.load("res2.pyxres")
+        pyxel.load("res.pyxres")
         # vide la fenetre
         #pyxel.cls(0)
 
