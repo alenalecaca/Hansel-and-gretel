@@ -4,6 +4,7 @@
 # V2 (AR) demo jouable avec plateformes
 # V3 (AR) correction de bugs, gestion sauts
 # V4 (team) suppression blocs, ajout obstacles au sol
+# V5 (AR) obstacles graphiques (avec res.pyxres)
 #==========================================================
 
 # Pyxel Studioplats_l
@@ -33,11 +34,11 @@ max_saut = 1                # hauteur max saut (haut gauche du perso)
 blocs_liste = []            # liste des blocs deco, chque bloc = carré de 8x8
 # gestion des plateformes ("étagères")
 plats_liste = []      #liste des plateformes
-                      # tableau de couples [X,Y] position haut gauche des plateformes
+                      # tableau de couples [X,Y,type] position haut gauche des plateformes
 lg_plat = 40          # constante: longueur d'une plateforme = 5 carrés de 8
 ht_plat = 4           # constante: hauteur plateforme
 
-plats_liste=[[10,perso_y+hauteur_perso],[65,perso_y+hauteur_perso]]  # premieres olatformes pour ne pas tomber tout de suite
+plats_liste=[[10,perso_y+hauteur_perso,0],[65,perso_y+hauteur_perso,1]]  # premieres olatformes pour ne pas tomber tout de suite
 # gestion du sol bas et des obstacles
 plancher = 124              # sol bas supportant les obstacles à la position X du perso
 sol_bas = 124               # sol bas courant à la pos X du perso = plancher ou haut d'un obstacle
@@ -46,7 +47,13 @@ obst_liste = []             # liste des obstacles actifs, pour chaque obstacle:
                             # type obstacle
 # liste des 6 types d'obstacles et leur tailles: constantes, ne pas toucher
 # [largeur, hauteur, mortel par contact] à mettre à jour après design des obstacles
-obst_types = [[8,8,False],[8,8,False],[8,8,False],[8,8,False],[8,8,False],[8,8,False]]
+obst_types = [[16,16,False,0,0],    # chat
+              [13,16,True,17,0],    # fiole
+              [13,16,False,33,0],    # marmite
+              [16,14,False,48,2],   # araignee
+              [7,16,False,66,0],    # sucre d'orge
+              [13,11,False,82,5],   # bonbon
+              [14,13,False,97,3]]   # champignon
 
 #####################################################################################################
 ############### FONCTION D INITIALISATION ###########################################################
@@ -103,7 +110,7 @@ def game_init():
 
     restart = False         # redemarrer une session de jeu
     
-    plats_liste=[[10,perso_y+hauteur_perso],[65,perso_y+hauteur_perso]]  # premiers plateformes pour ne pas tomber tout de suite
+    plats_liste=[[10,perso_y+hauteur_perso,0],[65,perso_y+hauteur_perso,1]]  # premiers plateformes pour ne pas tomber tout de suite
     # gestion du sol bas et des obstacles
     plancher = 124              # sol bas supportant les obstacles à la position X du perso
     sol_bas = 124               # sol bas courant à la pos X du perso = plancher ou haut d'un obstacle
@@ -115,7 +122,13 @@ def game_init():
     # largeur / hauteur du dessin
     # mortel: True/False = c'est un obstacle mortel
     # posx, posy = position en x,y du haut:gauche dessin dans le fichier pyxres
-    obst_types = [[8,8,False,0,0],[8,10,False,0,0],[3,20,True,0,0],[8,16,False,0,0],[8,15,False,0,0],[8,8,False,0,0]]
+    obst_types = [[16,16,False,0,0],    # chat
+                  [13,16,True,17,0],    # fiole
+                  [13,16,False,33,0],    # marmite
+                  [16,14,False,48,2],   # araignee
+                  [7,16,False,66,0],    # sucre d'orge
+                  [13,11,False,82,5],   # bonbon
+                  [14,13,False,97,3]]   # champignon
 
 #####################################################################################################
 ############### FONCTIONS LOCALES ###################################################################
@@ -126,11 +139,13 @@ def game_init():
 #=======================================================================
 def obstacles_creation(obst_liste):
     """création aléatoire d'obstacles au sol"""
+    global obst_types
     # element de obst_lite:
     # [coord X, type obstacle]
     # un obstacle au sol toutes les X frame, a ajuster en fonction de la jouabilité
+    maxtypes = len(obst_types) - 1 
     if (pyxel.frame_count % 80 == 0):
-        obst_liste.append([120, random.randint(0,5)])
+        obst_liste.append([120, random.randint(0,maxtypes)])
     return obst_liste
 
 def obstacles_deplacement(obst_liste):
@@ -152,7 +167,7 @@ def platforms_creation(plats_liste):
     """création aléatoire de plateformes"""
     global h_debout, ht_plat    # une plateforme toutes les X frame, a ajuster en fonction de la jouabilité
     if (pyxel.frame_count % 50 == 0):
-        plats_liste.append([120, random.randint(0+h_debout+16, 128-ht_plat)])
+        plats_liste.append([120, random.randint(0+h_debout+16, 128-ht_plat),random.randint(0,2)])
     return plats_liste
 
 def platforms_deplacement(plats_liste):
@@ -401,7 +416,8 @@ def game_draw():
         
         # plateformes
         for plat in plats_liste:
-            pyxel.rect(plat[0], plat[1], lg_plat, ht_plat, 4)  # a remplacer par dessin pyxres
+            pyxel.blt(plat[0],plat[1],1,0,16+plat[2]*4,lg_plat,ht_plat,2)
+            #pyxel.rect(plat[0], plat[1], lg_plat, ht_plat, 4)  # a remplacer par dessin pyxres
 
         # obstacles au sol
         for obst in obst_liste:
@@ -409,8 +425,11 @@ def game_draw():
             tpdesc= obst_types[tpobst]      # triplet de description du type
             lgobst=tpdesc[0]                # largeur de ce type d'obstacle
             htobst=tpdesc[1]                # hauteur de ce type d'obstacle
+            xobst = tpdesc[3]                 # coord X du dessin dans res.pyxres
+            yobst = tpdesc[4]                 # coord Y du dessin dans res.pyxres
                       
-            pyxel.rect(obst[0],plancher-htobst,lgobst,htobst,6)
+            # pyxel.rect(obst[0],,lgobst,htobst,6)
+            pyxel.blt(obst[0],plancher-htobst,1,xobst,yobst,lgobst,htobst,2)
             
         # afficher personnage par effet progressif (3 trames)
         # en fonction de si il est debout/sautant ou rampant
