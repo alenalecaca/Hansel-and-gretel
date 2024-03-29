@@ -36,7 +36,7 @@ blocs_liste = []            # liste des blocs deco, chque bloc = carré de 8x8
 plats_liste = []      #liste des plateformes
                       # tableau de couples [X,Y,type] position haut gauche des plateformes
 lg_plat = 40          # constante: longueur d'une plateforme = 5 carrés de 8
-ht_plat = 4           # constante: hauteur plateforme
+ht_plat = 8          # constante: hauteur plateforme
 
 plats_liste=[[10,perso_y+hauteur_perso,0],[65,perso_y+hauteur_perso,1]]  # premieres olatformes pour ne pas tomber tout de suite
 # gestion du sol bas et des obstacles
@@ -105,7 +105,7 @@ def game_init():
                           # tableau de couples [X,Y] position haut gauche des plateformes
     lg_plat = 40          # constante: longueur d'une plateforme = 5 carrés de 8
                                 # plus tard on pourra faire les tailles variables
-    ht_plat = 4           # constante: hauteur plateforme
+    ht_plat = 8           # constante: hauteur plateforme
                             # pas utilisé pour l'instant
 
     restart = False         # redemarrer une session de jeu
@@ -125,10 +125,10 @@ def game_init():
     obst_types = [[16,16,False,0,0],    # chat
                   [13,16,True,17,0],    # fiole
                   [13,16,False,33,0],    # marmite
-                  [16,14,False,48,2],   # araignee
+                  [16,13,False,48,2],   # araignee
                   [7,16,False,66,0],    # sucre d'orge
-                  [13,11,False,82,5],   # bonbon
-                  [14,13,False,97,3]]   # champignon
+                  [13,10,False,82,5],   # bonbon
+                  [14,12,False,97,3]]   # champignon
 
 #####################################################################################################
 ############### FONCTIONS LOCALES ###################################################################
@@ -416,7 +416,7 @@ def game_draw():
         
         # plateformes
         for plat in plats_liste:
-            pyxel.blt(plat[0],plat[1],1,0,16+plat[2]*4,lg_plat,ht_plat,2)
+            pyxel.blt(plat[0],plat[1],1,0,52+plat[2]*16,lg_plat,ht_plat,2)
             #pyxel.rect(plat[0], plat[1], lg_plat, ht_plat, 4)  # a remplacer par dessin pyxres
 
         # obstacles au sol
@@ -443,7 +443,7 @@ def game_draw():
                 pyxel.blt(perso_x, perso_y, 0, 14, 32, 16, 16, 2)
         else:  
             if pyxel.frame_count % 15 < 5:
-                pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
+                pyxel.blt(perso_x, perso_y, 0, 0, 64, 13, 16, 2)
             elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
                 pyxel.blt(perso_x, perso_y, 0, 0, 32, 13, 16, 2)
             else:
