@@ -39,7 +39,7 @@ blocs_liste = []            # liste des blocs deco, chque bloc = carré de 8x8
 plats_liste = []      #liste des plateformes
                       # tableau de couples [X,Y,type] position haut gauche des plateformes
 lg_plat = 40          # constante: longueur d'une plateforme = 5 carrés de 8
-ht_plat = 4           # constante: hauteur plateforme
+ht_plat = 8           # constante: hauteur plateforme
 
 plats_liste=[[10,perso_y+hauteur_perso,0],[65,perso_y+hauteur_perso,1]]  # premieres olatformes pour ne pas tomber tout de suite
 # gestion du sol bas et des obstacles
@@ -53,10 +53,10 @@ obst_liste = []             # liste des obstacles actifs, pour chaque obstacle:
 obst_types = [[16,16,False,0,0],    # chat
               [13,16,True,17,0],    # fiole
               [13,16,False,33,0],    # marmite
-              [16,14,False,48,2],   # araignee
-              [7,16,False,66,0],    # sucre d'orge
-              [13,11,False,82,5],   # bonbon
-              [14,13,False,97,3]]   # champignon
+              [16,13,False,48,2],   # araignee
+              [13,16,False,67,0],    # sucre d'orge
+              [14,12,False,82,4],   # bonbon
+              [16,15,False,96,1]]   # champignon
 
 #####################################################################################################
 ############### FONCTION D INITIALISATION ###########################################################
@@ -87,7 +87,7 @@ def game_init():
 
     # intialisations jeu
     difficulté = np.e
-    perso_x = 60                # position personnage
+    perso_x = 90                # position personnage
     perso_y = 60                # position personnage
     sol = 76                    # hauteur (y) du sol courant (a la position x du personnage+ sa hauteur)
     hauteur_perso = 16          # hauteur affichahge du personnage (toujours = 16)
@@ -111,7 +111,7 @@ def game_init():
                           # tableau de couples [X,Y] position haut gauche des plateformes
     lg_plat = 40          # constante: longueur d'une plateforme = 5 carrés de 8
                                 # plus tard on pourra faire les tailles variables
-    ht_plat = 4           # constante: hauteur plateforme
+    ht_plat = 8           # constante: hauteur plateforme
                             # pas utilisé pour l'instant
 
     restart = False         # redemarrer une session de jeu
@@ -131,10 +131,10 @@ def game_init():
     obst_types = [[16,16,False,0,0],    # chat
                   [13,16,True,17,0],    # fiole
                   [13,16,False,33,0],    # marmite
-                  [16,14,False,48,2],   # araignee
-                  [7,16,False,66,0],    # sucre d'orge
-                  [13,11,False,82,5],   # bonbon
-                  [14,13,False,97,3]]   # champignon
+                  [16,13,False,48,2],   # araignee
+                  [13,16,False,67,0],    # sucre d'orge
+                  [14,12,False,82,4],   # bonbon
+                  [16,15,False,96,1]]   # champignon
 
 #####################################################################################################
 ############### FONCTIONS LOCALES ###################################################################
@@ -158,7 +158,10 @@ def obstacles_deplacement(obst_liste):
     """déplacement des obstacles vers la gauche et suppression s'ils sortent du cadre"""
     global obst_types, difficulté
     for obst in obst_liste:
+        # obst[0] -= 1                # on recule d'un pixel (version sans facteur difficulte)
         obst[0] -= int(np.log(difficulté))                # on recule d'un pixel
+        print("X obstacle = ",obst[0])
+        # BUG quand on accelere, la valeur devient negative au bout d'un moment ##########
         tpobst=obst[1]              # type d'obtacle
         tpdesc= obst_types[tpobst]  # triplet de description du type
         lgobst=tpdesc[0]             # largeur de ce type d'obstacle
@@ -173,7 +176,7 @@ def platforms_creation(plats_liste):
     """création aléatoire de plateformes"""
     global h_debout, ht_plat    # une plateforme toutes les X frame, a ajuster en fonction de la jouabilité
     if (pyxel.frame_count % 50 == 0):
-        plats_liste.append([120, random.randint(0+h_debout+16, 128-ht_plat),random.randint(0,2)])
+        plats_liste.append([120, random.randint(0+h_debout+16, 100),random.randint(0,2)])
     return plats_liste
 
 def platforms_deplacement(plats_liste):
@@ -272,13 +275,13 @@ def pousse_ou_tue():
     # si oui il faufdra décaler le perso en X à gauche de 1 position (comme l'obstacle)
     # gestion des collisions avec obstacles et poussage à gauche
     if rampe:
-        if perso_y+h_rampe == plancher:
+        if perso_y+hauteur_perso == plancher:
             for obst in obst_liste:
                 tpobst=obst[1]                  # type d'obtacle
                 tpdesc= obst_types[tpobst]      # triplet de description du type
                 htobst=tpdesc[1]                # hauteur de ce type d'obstacle
                 mortel = tpdesc[2]              # tue par contact
-            if perso_x+lg_rampe==obst[0]-1: # le perso est juste à gauche de l'obstacle
+                if perso_x+lg_rampe==obst[0]-1: # le perso est juste à gauche de l'obstacle
                     if mortel:
                         mort = True
                     else:
@@ -292,7 +295,8 @@ def pousse_ou_tue():
                 tpdesc= obst_types[tpobst]      # triplet de description du type
                 htobst=tpdesc[1]                # hauteur de ce type d'obstacle
                 mortel = tpdesc[2]              # tue par contact
-            if perso_x+lg_perso==obst[0]-1: # le perso est juste à gauche de l'obstacle
+                # print(perso_x+lg_perso,"  ",obst[0])
+                if perso_x+lg_perso==obst[0]-1: # le perso est juste à gauche de l'obstacle
                     if mortel:
                         mort = True
                     else:
@@ -309,23 +313,23 @@ def pousse_ou_tue():
 def perso_deplacement():
     global perso_y, perso_x, sol, saut, rampe, taille_perso, hauteur_perso, h_rampe, h_debout, max_saut, mort, score
 
-
-    rampe = pyxel.btn(pyxel.KEY_DOWN)# and (perso_y+hauteur_perso == sol)
+    bas_perso = perso_y+hauteur_perso     # perso_y = le haut de l'image perso, hauteurperso= hauteur de l'image (toujours 16)
+    rampe = pyxel.btn(pyxel.KEY_DOWN) and ((bas_perso == sol)or(bas_perso == sol_bas))
     # mise à jour taille max personnage, pour  gestion collisions
-    # pour l'affichage on affiche toujeur 16 pix de haut actuellement
+    # pour l'affichage on affiche toujeur 16 pix de haut actuellement  ("hauteur_perso")
     if rampe and perso_x <= 65:
-        taille_perso = h_rampe 
+        taille_perso = h_rampe  # hauteur utile si rampe
         perso_x += 1
     else:
-        taille_perso = h_debout
+        taille_perso = h_debout # hauteur utile si debout
 
     #gestion des sauts (monte en plusieurs fois jusqu'à la hauteur max_saut)
-    bas_perso = perso_y+hauteur_perso
+    
     if pyxel.btnp(pyxel.KEY_UP) and ((bas_perso == sol)or(bas_perso == sol_bas)):
         # on ne peut commencer un saut que si on est au sol: plateforme ou bas
         saut = True
         score += 1                          # a confirmer =score = nombre de sauts
-        print(" score = ", score)
+        #print(" score = ", score)
     if saut:
         if pyxel.btnp(pyxel.KEY_UP,1,1):    # si la touche fleche est maintenue on continue à sauter
             perso_y -=3
@@ -459,7 +463,7 @@ def game_draw():
         
         # plateformes
         for plat in plats_liste:
-            pyxel.blt(plat[0],plat[1],1,0,16+plat[2]*4,lg_plat,ht_plat,2)
+            pyxel.blt(plat[0],plat[1],1,0,52+plat[2]*16,lg_plat,ht_plat,2)
             #pyxel.rect(plat[0], plat[1], lg_plat, ht_plat, 4)  # a remplacer par dessin pyxres
 
         # obstacles au sol
