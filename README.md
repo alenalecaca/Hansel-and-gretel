@@ -1,6 +1,6 @@
 # Hansel-and-gretel
 
-creer par: alena pogudina, elise schultz, alenur rousseau
+creer par: Alena Pogudina, Elise Schultz, Alienor Rousseau, Rafael Martellini
 
 inspiration : compte de hansel and gretel ; frères grimm
 
@@ -8,16 +8,15 @@ histoire : "Hansel et Gretel" est un conte populaire allemand des frères Grimm.
 
 -----------------------------------------------------------------------
 description du jeu :  
-Le jeu Hansel & Gretel sera un jeu interactif qui décrit l'histoire de deux enfants perdus qui doivent s'enfuir de la sorcière et de sa maison en collectant des bonbons basés sur le compte des frères Grimm.  
-colore et pratiques pour l'interaction  
+Le jeu Hansel & Gretel sera un jeu de plateformes qui sera basé sur l'histoire sur le compte des frères Grimm. Le personnage se "déplacera" sur un sol mais pourra aussi survoler les obstacles bloquant le chemin grâce à des plateformes flottantes. En même temps, le personnage est "poursuivi" par une sorcière qui, à l'interaction entre le joueur et la sorcière, provoquera un game over.
 -----------------------------------------------------------------------
 Questions  
 1 - Interface graphique et bibliothèque graphique : Le jeu vidéo "Hansel and Gretel" utilisera l'interface graphique fournie par le site Pixel Studio. La bibliothèque graphique associée à Pixel Studio sera utilisée pour le développement visuel du jeu.  
-2 - Interaction utilisateur : Les interactions avec le jeu se feront principalement via le clavier. Les utilisateurs auront la possibilité de contrôler les personnages Hansel et Gretel à l'aide des touches du clavier. Le jeu est conçu pour un seul utilisateur.  
+2 - Interaction utilisateur : Les interactions avec le jeu se feront principalement via le clavier. Les utilisateurs auront la possibilité de contrôler les personnages Hansel et Gretel à l'aide des touches du clavier mais aussi de la souris. Le jeu est conçu pour un seul utilisateur.  
 3 - Partie audio : Le jeu comportera des éléments audio tels que musiques d'ambiance, effets sonores et bruitages. Ces éléments audio seront créés en interne pour assurer une intégration harmonieuse avec le jeu.  
 4 - Présence de menus : Un menu sera accessible en haut à gauche de l'écran, symbolisé par trois traits. Avant le début du jeu, les utilisateurs pourront accéder à un menu permettant de consulter le manuel du jeu, fournissant des informations sur les touches de contrôle et d'autres conseils utiles.  
 5 - Paramètres réglables par l'utilisateur : Les utilisateurs auront la possibilité de choisir entre deux personnages, Hansel et Gretel, avant de commencer le jeu. De plus, la difficulté du jeu évoluera progressivement avec chaque niveau.  
-6 - Évolutivité durant l'utilisation : Le jeu est conçu avec plusieurs niveaux, chaque niveau présentant une difficulté croissante. La vitesse de déplacement de la sorcière, l'antagoniste du jeu, augmentera à mesure que les joueurs progressent dans les niveaux.  
+6 - Évolutivité durant l'utilisation : Le jeu n'est pas conçu avec des niveaux définis, mais avec des parties infinies et génerées de pmanière aléatoire. La difficulté augmentera au fil de la progression du jeu, jusqu'à rester à un niveau stagnant ( la programmation de la difficulté est basée sur la fonction exponentielle ).   
 7 - Programmation complexe : Une intelligence artificielle (IA) sera implémentée pour contrôler les déplacements de la sorcière. La sorcière se déplacera de manière aléatoire, mais conformément à des conditions prédéfinies pour assurer un défi constant aux joueurs.  
 8 -   Quel sera le format des fichiers audio utilisés dans le jeu ? Le format des fichiers audio utilisés dans le jeu sera déterminé ultérieurement, en fonction des besoins spécifiques en termes de qualité sonore et de compatibilité avec la plateforme de déploiement.  
 9 - Comment seront gérées les sauvegardes de progression des joueurs ? Les sauvegardes de progression des joueurs seront gérées à l'aide de la fonction de contrôle de version fournie par GitHub. Chaque joueur pourra sauvegarder sa progression et reprendre le jeu là où il s'était arrêté.  
