@@ -390,8 +390,36 @@ def sorciere2():
         sorciere_y += 1                             # le numéro ajouté correspond à la vitesse (verticale) de la sorciere
     elif perso_x <= 45 and perso_y < sorciere_y:
         sorciere_y -= 1
-                                
 
+def sorciere3():
+  global sorciere_y
+  if perso_x <= 45 and perso_y > sorciere_y:  #1
+    sorciere_y += 1
+  elif perso_x <= 45 and perso_y < sorciere_y:  #2
+    sorciere_y -= 1
+  elif perso_x > 45 and sorciere_y == 45:  #3
+    sorciere_y = sorciere_y
+  elif perso_x > 45 and sorciere_y > 45:   #4
+    sorciere_y -= 1
+  elif perso_x > 45 and sorciere_y < 45:  #5
+    sorciere_y += 1
+
+def sorciere():      #meme que sorciere3
+  global sorciere_y
+  if perso_x <= 45:
+    if perso_y > sorciere_y:  #1
+      sorciere_y += 1
+    elif perso_y < sorciere_y:  #2
+      sorciere_y -= 1
+  elif perso_x > 45:
+    if sorciere_y == 45:  #3
+      sorciere_y = sorciere_y
+    elif sorciere_y > 45:
+      sorciere_y -= 1
+    elif sorciere_y < 45:
+      sorciere_y += 1
+
+      
 #===================================================================================
 # fonction à appeler dan la fonction "update" du module principal si ingame==True
 #===================================================================================       
