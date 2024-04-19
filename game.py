@@ -384,17 +384,11 @@ def fct_pause():
     elif pause == True and pyxel.btnp(pyxel.KEY_TAB) and not mort:
         pause = False
 
-def sorciere2():                                
-    global sorciere_y
-    if perso_x <= 45 and perso_y > sorciere_y:
-        sorciere_y += 1                             # le numéro ajouté correspond à la vitesse (verticale) de la sorciere
-    elif perso_x <= 45 and perso_y < sorciere_y:
-        sorciere_y -= 1
 
-def sorciere3():
+def sorciere():                #à utiliser
   global sorciere_y
   if perso_x <= 45 and perso_y > sorciere_y:  #1
-    sorciere_y += 1
+    sorciere_y += 1            #le numéro ajouté correspond à la vitesse (verticale) de la sorcière
   elif perso_x <= 45 and perso_y < sorciere_y:  #2
     sorciere_y -= 1
   elif perso_x > 45 and sorciere_y == 45:  #3
@@ -404,7 +398,7 @@ def sorciere3():
   elif perso_x > 45 and sorciere_y < 45:  #5
     sorciere_y += 1
 
-def sorciere():      #meme que sorciere3
+def sorciere2():      #meme que sorciere()
   global sorciere_y
   if perso_x <= 45:
     if perso_y > sorciere_y:  #1
@@ -454,7 +448,7 @@ def game_update():                  #fonction de calcul periodique
     update_sol_bas()        # a faire avant update_sol
     update_sol()            # necessite sol_bas
     perso_deplacement()
-    sorciere2()
+    sorciere()
 
     #   perso_mort()
     menu_mort()
