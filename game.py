@@ -42,6 +42,9 @@ def game_init():
     global score
     global difficulté
     global count
+    global plancher, sol_bas    # hauteur plancher terre) et hauteur du sol du bas (plancher ou obstacle)
+    global obst_liste           # liste des obstacles [[x,type],...]
+    global obst_types           # description reference des types d'obstacles [[long,haut,traversable],...]
 
     # intialisations jeu
     
@@ -62,9 +65,7 @@ def game_init():
     difficulté = np.e
     score = 0
     count = 0
-    global plancher, sol_bas    # hauteur plancher terre) et hauteur du sol du bas (plancher ou obstacle)
-    global obst_liste           # liste des obstacles [[x,type],...]
-    global obst_types           # description reference des types d'obstacles [[long,haut,traversable],...]
+
 
     # gestion des plateformes ("étagères")
     plats_liste = []      #liste des plateformes
@@ -135,8 +136,8 @@ def obstacles_deplacement(obst_liste):
 def platforms_creation(plats_liste):
     """création aléatoire de plateformes"""
     global h_debout, ht_plat    # une plateforme toutes les X frame, a ajuster en fonction de la jouabilité
-    if (pyxel.frame_count % 50 == 0):
-        plats_liste.append([120, random.randint(0+h_debout+16, 100),random.randint(0,2)])
+    if (pyxel.frame_count % 62 == 0):
+        plats_liste.append([120, random.randint(0+h_debout+16, 90),random.randint(0,2)])
     return plats_liste
 
 def platforms_deplacement(plats_liste):
@@ -295,6 +296,8 @@ def perso_deplacement():
             perso_y -=3
             if perso_y <= max_saut:         # on a depassé la hauteur max (inversé): on retombe au sol
                 saut = False
+            elif sol<perso_y<sol+ht_plat:       # on etait en train de remonter et on depasse le bas de la plateforme courante
+                saut=False
         else:                               # on a arreté d'appuyer sur fleche haut
             saut = False
     else:
