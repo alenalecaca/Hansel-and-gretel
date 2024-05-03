@@ -1,12 +1,5 @@
-#==========================================================
-# EVOLUTIONS
-# V1 (AR) creation des menus
-#==========================================================
-
-# Pyxel Studio
-
-import pyxel, random
-
+import pyxel
+import random
 
 # le initialisations suivantes sont à faire
 # ici si ce code principale est execute meme si c'est un module seconsaire
@@ -17,17 +10,16 @@ import pyxel, random
 # variable globale tableau des fonctions associees aux touche (on peut rallonger le tableau)
 # chaque element correspont à une touche à afficher (tout marche pour tout nb d'element si rentre à l'ecran)
 # chaque valeur correspond à un code de fonction à appeler, et à un code de graphique à afficher
-menu_touches=[0,1,2,3]              #menu des fonction des touches courantes
+menu_touches=[0,1]              #menu des fonction des touches courantes
 # les fonctions correspondent aussi à un dessin
-# le menu peut varier suivant le contexte
-
+# le menu peut varier suivant le contexte 
 # parametrages des tailles de touches: constantes lisibles mais non modifiables par les fonctions
 # tout marche si on change la taille des touches ou d'autre paramétres
 # mais si on change la taille des touches, il faut les redessiner dans le fichier pyxres
 lg_touche = 28                      # longueur d une touche 
 ht_touche = 11                      # hauteur d'une touche
 separ = 2                           # taille separateur entre touches
-x_menu = 5                          # place en X du menu
+x_menu = 35                      # place en X du menu
 y_menu = 90                         # place en Y du menu
 
 
@@ -36,7 +28,7 @@ y_menu = 90                         # place en Y du menu
 ########################################################################
 # zone_touche: calcule les intervalles de zone sensible d'une touche
 # dit sur le point x,y est dans la zone de la touche num_touche
-def zone_touche(num_touche,x,y):     #
+def zone_touche(num_touche,x,y):     
     x_min = x_menu + num_touche*(lg_touche+separ)
     x_max = x_min + lg_touche
     y_min = y_menu
@@ -77,7 +69,6 @@ def menus_update():
 
     if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
         fonction = fct_touche(pyxel.mouse_x,pyxel.mouse_y)
-        print("valeur foncton =",fonction)    #### pour DEBUG: à enlever
       
         # et lancer la fonction si code connu
         if fonction == 0:
@@ -86,29 +77,7 @@ def menus_update():
         elif fonction == 1:
             # PLAY
             return(True)            # lancer le jeu, à affecer à "ingame"
-        elif fonction == 2:
-            # OPTIONS
-            menu_touches=[4,5,6,7]  # menu options
-        elif fonction == 3:
-            # SHOP
-            menu_touches=[0,1,2,3] # a remplacer menu SHOP ou action SHOP
-        elif fonction == 4:
-            # SOUND
-            menu_touches=[0,1,2,3] # a remplacer menu SOUND ou fonction SOUND
-        elif fonction == 5:
-            # OPTION 2
-            menu_touches=[0,1,2,3] # a remplacer menu Option2 ou fonction Option2       
-        elif fonction == 6:
-            # OPTION 3
-            menu_touches=[0,1,2,3] # a remplacer menu Option3 ou fonction Option3       
-        elif fonction == 7:
-            # RETOUR DE OPTIONS
-            menu_touches=[0,1,2,3] # on remet le menu principal (ne pas modifier)
-        # completer avec des "elif" pour chaque fonction qui sera definie
-        else:
-            #
-            print("fonction inconnue (255)",fonction)   #pour DEBUG, à enlever
-        print(menu_touches)                             #pour DEBUG, à enlever
+
 
 #=================================?????=====================================
 # fonction à appeler à l'initialisation dans le module principal
@@ -128,7 +97,7 @@ def menus_init():
     # variable globale tableau des fonctions associees aux touche (on peut rallonger le tableau)
     # chaque element correspont à une touche à afficher (tout marche pour tout nb d'element si rentre à l'ecran)
     # chaque valeur correspond à un code de fonction à appeler, et à un code de graphique à afficher
-    menu_touches=[0,1,2,3]              #menu des fonction des touches courantes
+    menu_touches=[0,1]              #menu des fonction des touches courantes
     # les fonctions correspondent aussi à un dessin
     # le menu peut varier suivant le contexte
 
@@ -138,7 +107,7 @@ def menus_init():
     lg_touche = 28                      # longueur d une touche 
     ht_touche = 11                      # hauteur d'une touche
     separ = 2                           # taille separateur entre touches
-    x_menu = 5                          # place en X du menu
+    x_menu = 35                          # place en X du menu
     y_menu = 90                         # place en Y du menu
 
 #================================================================
@@ -152,14 +121,6 @@ def menus_draw():
 
     pyxel.rect(10, 10, 20, 20, 11)
     pyxel.rect(20,20,80,20,12)
-    pyxel.text(30, 27, "Hansel & Gretel", 8 )
+    pyxel.text(20, 27, "Hansel a la \n recherche de Gretel", 8 )
     pyxel.mouse(True)                   # rendre le curseur visible
     affiche_menu(menu_touches) 
-        
-
-
-        
-
-            
-
-
