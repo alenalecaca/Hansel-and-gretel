@@ -1,12 +1,5 @@
-#==========================================================
-# EVOLUTIONS
-# V1 (AR) separation game et menus
-#==========================================================
-
-
-# Pyxel Studio
-
-import pyxel, random
+import pyxel
+import random
 from menus import menus_init, menus_draw, menus_update
 from game import game_init, game_draw, game_update
 
