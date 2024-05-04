@@ -356,49 +356,50 @@ def game_draw():
         # print("mort main loop")
 
   
-    pyxel.load("res.pyxres")
-    # vide la fenetre
-    #pyxel.cls(0)
+    else:
+        pyxel.load("res.pyxres")
+        # vide la fenetre
+        #pyxel.cls(0)
 
-    # sol
-    pyxel.rect(0,124,128,4,4)
-    # a remplacer par une succession de dessins pyxres qui defilent
-    # au meme rythme que les obstacles
-    
-    # plateformes
-    for plat in plats_liste:
-        pyxel.blt(plat[0],plat[1],1,0,52+plat[2]*16,lg_plat,ht_plat,2)
-        #pyxel.rect(plat[0], plat[1], lg_plat, ht_plat, 4)  # a remplacer par dessin pyxres
-
-    # obstacles au sol
-    for obst in obst_liste:
-        tpobst=obst[1]                  # type d'obtacle
-        tpdesc= obst_types[tpobst]      # triplet de description du type
-        lgobst=tpdesc[0]                # largeur de ce type d'obstacle
-        htobst=tpdesc[1]                # hauteur de ce type d'obstacle
-        xobst = tpdesc[3]                 # coord X du dessin dans res.pyxres
-        yobst = tpdesc[4]                 # coord Y du dessin dans res.pyxres
-                    
-        # pyxel.rect(obst[0],,lgobst,htobst,6)
-        pyxel.blt(obst[0],plancher-htobst,1,xobst,yobst,lgobst,htobst,2)
+        # sol
+        pyxel.rect(0,124,128,4,4)
+        # a remplacer par une succession de dessins pyxres qui defilent
+        # au meme rythme que les obstacles
         
-    # afficher personnage par effet progressif (3 trames)
-    # en fonction de si il est debout/sautant ou rampant
-    # on affiche sur hauteur 16 qqsoit le dessin
-    if rampe:
-        if pyxel.frame_count % 15 < 5:
-            pyxel.blt(perso_x, perso_y, 0, 14, 16, 16, 16, 2)
-        elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
-            pyxel.blt(perso_x, perso_y, 0, 14, 48, 16, 16, 2)
-        else:
-            pyxel.blt(perso_x, perso_y, 0, 14, 32, 16, 16, 2)
-    else:  
-        if pyxel.frame_count % 15 < 5:
-            pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
-        elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
-            pyxel.blt(perso_x, perso_y, 0, 0, 32, 13, 16, 2)
-        else:
-            pyxel.blt(perso_x, perso_y, 0, 0, 64, 13, 16, 2)
+        # plateformes
+        for plat in plats_liste:
+            pyxel.blt(plat[0],plat[1],1,0,52+plat[2]*16,lg_plat,ht_plat,2)
+            #pyxel.rect(plat[0], plat[1], lg_plat, ht_plat, 4)  # a remplacer par dessin pyxres
+
+        # obstacles au sol
+        for obst in obst_liste:
+            tpobst=obst[1]                  # type d'obtacle
+            tpdesc= obst_types[tpobst]      # triplet de description du type
+            lgobst=tpdesc[0]                # largeur de ce type d'obstacle
+            htobst=tpdesc[1]                # hauteur de ce type d'obstacle
+            xobst = tpdesc[3]                 # coord X du dessin dans res.pyxres
+            yobst = tpdesc[4]                 # coord Y du dessin dans res.pyxres
+                        
+            # pyxel.rect(obst[0],,lgobst,htobst,6)
+            pyxel.blt(obst[0],plancher-htobst,1,xobst,yobst,lgobst,htobst,2)
+            
+        # afficher personnage par effet progressif (3 trames)
+        # en fonction de si il est debout/sautant ou rampant
+        # on affiche sur hauteur 16 qqsoit le dessin
+        if rampe:
+            if pyxel.frame_count % 15 < 5:
+                pyxel.blt(perso_x, perso_y, 0, 14, 16, 16, 16, 2)
+            elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
+                pyxel.blt(perso_x, perso_y, 0, 14, 48, 16, 16, 2)
+            else:
+                pyxel.blt(perso_x, perso_y, 0, 14, 32, 16, 16, 2)
+        else:  
+            if pyxel.frame_count % 15 < 5:
+                pyxel.blt(perso_x, perso_y, 0, 0, 48, 13, 16, 2)
+            elif pyxel.frame_count % 15 >= 5 and pyxel.frame_count % 15 < 10:
+                pyxel.blt(perso_x, perso_y, 0, 0, 32, 13, 16, 2)
+            else:
+                pyxel.blt(perso_x, perso_y, 0, 0, 64, 13, 16, 2)
 
 
-    pyxel.text(1, 10, str(score), 10) # le score qui s'affiche en haut à gauche de l'écran
+        pyxel.text(1, 10, str(score), 10) # le score qui s'affiche en haut à gauche de l'écran
