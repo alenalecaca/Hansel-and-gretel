@@ -52,12 +52,8 @@ def fct_touche(x_click,y_click):
 # nb de touches (taille du tuple "menu"), taille des touches et séparateurs,
 # peuvent êtres changés dans les variables globales, à condition de rentrer dans l'écran (pas de test)
 def affiche_menu(menu):             # affiche les touches de "menu" (tableau)
-    for ind in range(0,len(menu)):
-        # afficher en x_menu+(numero touche * lg-touche), y_menu
-        # le dessin situé en 0, ht_touche*code fonction
-        # de taille lg_touche sur ht_touche
-        pyxel.blt(x_menu+ind*(lg_touche+separ),y_menu,0,0,ht_touche*menu[ind],lg_touche,ht_touche)
-
+    pyxel.blt(x_menu,y_menu,0,0,ht_touche*menu[1],lg_touche,ht_touche) # affichage de PLAY
+    pyxel.blt(x_menu+(lg_touche+separ),y_menu,0,0,ht_touche*menu[0],lg_touche,ht_touche) # affichage de QUIT
                                 
 #==================================================================
 # fonction à appeler dans la fonction "update" du module principal
@@ -72,11 +68,12 @@ def menus_update():
       
         # et lancer la fonction si code connu
         if fonction == 0:
+            # PLAY
+            return(True)            # lancer le jeu, à affecrer à "ingame"
+        else:
             # QUIT
             pyxel.quit()
-        elif fonction == 1:
-            # PLAY
-            return(True)            # lancer le jeu, à affecer à "ingame"
+
 
 
 #=================================?????=====================================
