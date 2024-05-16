@@ -28,7 +28,7 @@ def update():                       #fonction de calcul periodique
         ingame=game_update()               # actuellement il n'y a rien de prevu pour rebasculer "ingame" à faux
                                     # si on le faisait on pourrait revenir à l'écran de menus
  
-            
+        
 def draw(): 
     global ingame
     if not ingame:                      # fonction d'affichage periodique   
@@ -39,10 +39,14 @@ def draw():
         # appel de la fonction "draw" du jeu
         game_draw()
 
-
+def play_music():                   # Ajout de la fonction pour jouer la musique
+    pyxel.playm(0, loop=True)      # Joue la musique en boucle
 
 # appel des fonctions d'initialisation du menu et du jeu
 
 menus_init()                # initialiser les menus
 game_init()                 # initialiser le jeu
+
+play_music()  # Appel de la fonction pour jouer la musique au démarrage du jeu
+
 pyxel.run(update, draw)
